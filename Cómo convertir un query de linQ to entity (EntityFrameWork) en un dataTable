@@ -1,0 +1,38 @@
+P2_PC1_TAD_2019IIEntities EF = new P2_PC1_TAD_2019IIEntities();
+public DataTable SeleccionarDetalleEF(int CREC_ID)
+        {
+            try
+            {
+
+               var q = (from mu in EF.DET_RECETA.AsQueryable()
+                        join P in EF.PRODUCTO on mu.PROD_ID equals P.PROD_ID
+                        where mu.CREC_ID == CREC_ID
+                        select new ListofModuleUser
+                        {
+                            PROD_ID = mu.PROD_ID,
+                            PROD_DESC = P.PROD_DESC,
+                            DREC_CANTIDAD = mu.DREC_CANTIDAD,
+                            DREC_INDICACION = mu.DREC_INDICACION,
+          
+                        })
+                         .ToList();
+
+                DataTable table = new DataTable();
+                table.Columns.Add("PROD_ID", typeof(string));
+                table.Columns.Add("PROD_DESC", typeof(string));
+                table.Columns.Add("DREC_CANTIDAD", typeof(string));
+                table.Columns.Add("DREC_INDICACION", typeof(string));
+
+                foreach (ListofModuleUser str in q)
+                {
+                    DataRow row = table.NewRow();
+                    row["PROD_ID"] = str.PROD_ID;
+                    row["PROD_DESC"] = str.PROD_DESC;
+                    row["DREC_CANTIDAD"] = str.DREC_CANTIDAD;
+                    row["DREC_INDICACION"] = str.DREC_INDICACION;
+                    table.Rows.Add(row);
+                }
+
+                return table;
+
+            }
